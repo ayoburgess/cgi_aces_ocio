@@ -188,7 +188,7 @@ config.setActiveViews(",".join(["ACES Rec 709 ODT",
                                 "Raw"]))
 
 # set roles
-config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, "Linear (ACEScg)")
+config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, "Linear (sRGB)")
 config.setRole(OCIO.Constants.ROLE_REFERENCE, "Linear (ACES2065-1)")
 config.setRole(OCIO.Constants.ROLE_COLOR_TIMING, "ACEScc")
 config.setRole(OCIO.Constants.ROLE_COMPOSITING_LOG, "ACEScc")
@@ -197,8 +197,8 @@ config.setRole(OCIO.Constants.ROLE_DEFAULT, "Raw")
 config.setRole(OCIO.Constants.ROLE_COLOR_PICKING, "Raw")
 config.setRole(OCIO.Constants.ROLE_MATTE_PAINT, "Raw")
 config.setRole(OCIO.Constants.ROLE_TEXTURE_PAINT, "Raw")
-config.setRole("rendering", "Linear (ACEScg)")
-config.setRole("compositing_linear", "Linear (ACEScg)")
+config.setRole("rendering", "Linear (sRGB)")
+config.setRole("compositing_linear", "Linear (sRGB)")
 
 # output config
 output_filename = "config.ocio"
