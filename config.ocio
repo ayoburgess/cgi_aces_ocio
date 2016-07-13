@@ -1,0 +1,242 @@
+ocio_profile_version: 1
+
+search_path: luts
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: Raw
+  color_timing: ACEScc
+  compositing_linear: Linear (ACEScg)
+  compositing_log: ACEScc
+  data: Raw
+  default: Raw
+  matte_paint: Raw
+  reference: Linear (ACES2065-1)
+  rendering: Linear (ACEScg)
+  scene_linear: Linear (ACEScg)
+  texture_paint: Raw
+
+displays:
+  Rec 709:
+    - !<View> {name: ACES Rec 709 ODT, colorspace: ACES Rec 709 ODT}
+    - !<View> {name: Raw, colorspace: Raw}
+
+active_displays: [Rec 709]
+active_views: [ACES Rec 709 ODT, Raw]
+
+colorspaces:
+  - !<ColorSpace>
+    name: Raw
+    family: ""
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Raw data
+    isdata: true
+    allocation: uniform
+
+  - !<ColorSpace>
+    name: Linear (sRGB)
+    family: sRGB
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Scene-linear, high dynamic range, sRGB/Rec.709 primaries
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: sRGB_to_ACES2065-1.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: sRGB gamma
+    family: sRGB
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      sRGB gamma
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: sRGB
+    family: sRGB
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      sRGB colorspace, gamma and primaries
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: Linear (sRGB)}
+        - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: sRGB gamma}
+
+  - !<ColorSpace>
+    name: Linear (ACES2065-1)
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Scene-linear, high dynamic range, ACES2065-1 primaries
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+
+  - !<ColorSpace>
+    name: Linear (ACEScg)
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Scene-linear, high dynamic range, ACEScg primaries
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACEScg_to_ACES2065-1.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: Linear (ACESproxy)
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Scene-linear, high dynamic range, ACESproxy primaries
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACESproxy_to_ACES2065-1.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: ACESproxy gamma
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACESproxy gamma
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACESproxy_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: ACESproxy
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACESproxy colorspace, gamma and primaries
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: Linear (ACESproxy)}
+        - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: ACESproxy gamma}
+
+  - !<ColorSpace>
+    name: Linear (ACEScc)
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Scene-linear, high dynamic range, ACEScc primaries
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACEScc_to_ACES2065-1.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: ACEScc gamma
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACEScc gamma
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.3584, 1.468]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACEScc_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: ACEScc
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACEScc colorspace, gamma and primaries
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: Linear (ACEScc)}
+        - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: ACEScc gamma}
+
+  - !<ColorSpace>
+    name: Log2 48 nits Shaper gamma
+    family: ACES Shaper
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES Log2 48 nits Shaper gamma
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: ACES Rec 709 ODT
+    family: ACES ODT
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES Rec 709 output device transform
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: Log2 48 nits Shaper gamma}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.1.Rec.709.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: Linear (sRGB) to ACES Rec 709 ODT
+    family: Utility
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Utility transform for generating a Houdini LUT for ACES Rec 709 output device transform from Linear (sRGB)
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: Linear (sRGB), dst: ACES Rec 709 ODT}
+
+  - !<ColorSpace>
+    name: Linear (ACEScg) to ACES Rec 709 ODT
+    family: Utility
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Utility transform for generating a Houdini LUT for ACES Rec 709 output device transform from Linear (ACEScg)
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: Linear (ACEScg), dst: ACES Rec 709 ODT}
