@@ -46,6 +46,17 @@ gt.push_back(OCIO.ColorSpaceTransform(src="Linear (ACES2065-1)",
 cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 config.addColorSpace(cs)
 
+cs = OCIO.ColorSpace(name="Linear (ProPhotoRGB)", family="ProPhoto RGB")
+cs.setDescription("Scene-linear, high dynamic range, ProPhoto RGB primaries")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocationVars([-8.0, 5.0, 0.00390625])
+cs.setAllocation(OCIO.Constants.ALLOCATION_LG2)
+gt = OCIO.GroupTransform()
+gt.push_back(OCIO.FileTransform("ProPhotoRGB_to_ACES2065-1.spimtx",
+                                direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
+cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
 cs = OCIO.ColorSpace(name="Linear (ACES2065-1)", family="ACES")
 cs.setDescription("Scene-linear, high dynamic range, ACES2065-1 primaries")
 cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
