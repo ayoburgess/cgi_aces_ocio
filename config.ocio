@@ -79,6 +79,20 @@ colorspaces:
         - !<ColorSpaceTransform> {src: Linear (ACES2065-1), dst: sRGB gamma}
 
   - !<ColorSpace>
+    name: Linear (ProPhotoRGB)
+    family: ProPhoto RGB
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Scene-linear, high dynamic range, ProPhoto RGB primaries
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ProPhotoRGB_to_ACES2065-1.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
     name: Linear (ACES2065-1)
     family: ACES
     equalitygroup: ""
