@@ -193,10 +193,12 @@ config.addColorSpace(cs)
 rec709_display = "Rec 709"
 config.addDisplay(rec709_display, "ACES Rec 709 ODT", "ACES Rec 709 ODT")
 config.addDisplay(rec709_display, "Raw", "Raw")
+config.addDisplay(rec709_display, "Log", "ACEScc")
 
 config.setActiveDisplays("Rec 709")
 config.setActiveViews(",".join(["ACES Rec 709 ODT",
-                                "Raw"]))
+                                "Raw",
+                                "Log"]))
 
 # set roles
 config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, "Linear (sRGB)")

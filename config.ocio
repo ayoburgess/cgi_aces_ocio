@@ -21,9 +21,10 @@ displays:
   Rec 709:
     - !<View> {name: ACES Rec 709 ODT, colorspace: ACES Rec 709 ODT}
     - !<View> {name: Raw, colorspace: Raw}
+    - !<View> {name: Log, colorspace: ACEScc}
 
 active_displays: [Rec 709]
-active_views: [ACES Rec 709 ODT, Raw]
+active_views: [ACES Rec 709 ODT, Raw, Log]
 
 colorspaces:
   - !<ColorSpace>
