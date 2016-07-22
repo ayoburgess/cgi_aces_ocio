@@ -1,8 +1,25 @@
-# CGI ACES OCIO Config
+# CGI ACES 1.0 OCIO Config
 An OCIO config for CGI rendering with ACES 1.0. Houdini LUTs have been generated from this config and are included for convenience. The 1D resolution is 4096 and the 3D resolution is 64x64x64.
 
-# Provided Display transforms
-* **ACES Rec 709 Output Transform**
+# Provided ACES Transforms
+* **ACES - ACES2065-1**
+* **ACES - ACEScg**
+* **ACES - ACESproxy**
+* **ACES - ACEScc**
+
+# Provided Output Transforms
+* **Output - ACES Rec.709**
+
+# Provided Input Transforms
+* **Input - Linear (sRGB)**
+* **Input - sRGB**
+* **Input - Linear (ProPhoto RGB)**
+
+# Provided Utility Transforms
+* **Utility - Raw**
+* **Utility - Log2 48 nits Shaper**
+* **Utility - Input - Linear (sRGB) -> Output - Rec.709** - utility for creating Houdini LUT, not needed when using OCIO directly
+* **Utility - ACES - ACEScg -> Output - Rec.709** - utility for creating Houdini LUT, not needed when using OCIO directly
 
 # Installation (OCIO Compatible Software)
 * Set envar **OCIO** = config.ocio
@@ -10,6 +27,7 @@ An OCIO config for CGI rendering with ACES 1.0. Houdini LUTs have been generated
 # Installation (Houdini)
 * Set envar **HOUDINI_IMAGE_DISPLAY_GAMMA** = 1
 * Set envar **HOUDINI_IMAGE_DISPLAY_LUT** = houdini/linear_sRGB_to_ACES_Rec709_output.lut
+* Set envar **HOUDINI_IMAGE_DISPLAY_LUT** = houdini/ACEScg_to_ACES_Rec709_output.lut
 
 # References
 LUTs used in this configuration are referenced from [hpd/OpenColorIO-Configs](https://github.com/hpd/OpenColorIO-Configs.git).
