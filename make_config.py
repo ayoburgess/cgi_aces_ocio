@@ -162,8 +162,8 @@ config.setRole(OCIO.Constants.ROLE_DEFAULT, "Utility - Raw")
 config.setRole(OCIO.Constants.ROLE_COLOR_PICKING, "Utility - Raw")
 config.setRole(OCIO.Constants.ROLE_MATTE_PAINT, "Utility - Raw")
 config.setRole(OCIO.Constants.ROLE_TEXTURE_PAINT, "Utility - Raw")
-# config.setRole("rendering", "ACES - ACEScg")
-# config.setRole("compositing_linear", "ACES - ACEScg")
+config.setRole("rendering", "ACES - ACEScg")
+config.setRole("compositing_linear", "ACES - ACEScg")
 
 # output config
 output_filename = "config.ocio"
