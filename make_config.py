@@ -52,6 +52,20 @@ gt.push_back(OCIO.FileTransform("AP1_to_AP0.spimtx",
 cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
+cs = OCIO.ColorSpace(name="ACES - ACEScct", family="ACES")
+cs.setDescription("ACEScct colorspace, gamma and primaries")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+cs.setAllocationVars([-0.249136, 1.468])
+cs.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
+gt = OCIO.GroupTransform()
+gt.push_back(OCIO.FileTransform("ACEScct_to_linear.spi1d",
+                                interpolation=OCIO.Constants.INTERP_LINEAR,
+                                direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
+gt.push_back(OCIO.FileTransform("AP1_to_AP0.spimtx",
+                                direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
+cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+config.addColorSpace(cs)
+
 # Input transforms
 cs = OCIO.ColorSpace(name="Input - Linear (sRGB)", family="Input")
 cs.setDescription("Scene-linear, high dynamic range, sRGB/Rec.709 primaries")
@@ -90,13 +104,25 @@ cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
 # Output transforms
+cs = OCIO.ColorSpace(name="Output - sRGB", family="Output")
+cs.setDescription("ACES sRGB output transform")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+gt = OCIO.GroupTransform()
+gt.push_back(OCIO.ColorSpaceTransform(src="ACES - ACES2065-1",
+                                      dst="Utility - Log2 48 nits Shaper"))
+gt.push_back(OCIO.FileTransform("Log2_48_nits_Shaper.RRT.sRGB.spi3d",
+                                interpolation=OCIO.Constants.INTERP_TETRAHEDRAL,
+                                direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
+cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+config.addColorSpace(cs)
+
 cs = OCIO.ColorSpace(name="Output - Rec.709", family="Output")
 cs.setDescription("ACES Rec.709 output transform")
 cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
 gt = OCIO.GroupTransform()
 gt.push_back(OCIO.ColorSpaceTransform(src="ACES - ACES2065-1",
                                       dst="Utility - Log2 48 nits Shaper"))
-gt.push_back(OCIO.FileTransform("Log2_48_nits_Shaper.RRT.a1.0.1.Rec.709.spi3d",
+gt.push_back(OCIO.FileTransform("Log2_48_nits_Shaper.RRT.Rec.709.spi3d",
                                 interpolation=OCIO.Constants.INTERP_TETRAHEDRAL,
                                 direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
 cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
@@ -121,6 +147,16 @@ gt.push_back(OCIO.FileTransform("Log2_48_nits_Shaper_to_linear.spi1d",
 cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
+cs = OCIO.ColorSpace(name="Utility - Input - Linear (sRGB) -> Output - sRGB", family="Utility")
+cs.setDescription("Utility transform for generating a Houdini LUT for ACES sRGB "
+                  "output transform from Linear (sRGB)")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+gt = OCIO.GroupTransform()
+gt.push_back(OCIO.ColorSpaceTransform(src="Input - Linear (sRGB)",
+                                      dst="Output - sRGB"))
+cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+config.addColorSpace(cs)
+
 cs = OCIO.ColorSpace(name="Utility - Input - Linear (sRGB) -> Output - Rec.709", family="Utility")
 cs.setDescription("Utility transform for generating a Houdini LUT for ACES Rec.709 "
                   "output transform from Linear (sRGB)")
@@ -128,6 +164,16 @@ cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
 gt = OCIO.GroupTransform()
 gt.push_back(OCIO.ColorSpaceTransform(src="Input - Linear (sRGB)",
                                       dst="Output - Rec.709"))
+cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+config.addColorSpace(cs)
+
+cs = OCIO.ColorSpace(name="Utility - ACES - ACEScg -> Output - sRGB", family="Utility")
+cs.setDescription("Utility transform for generating a Houdini LUT for ACES sRGB "
+                  "output transform from ACEScg")
+cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
+gt = OCIO.GroupTransform()
+gt.push_back(OCIO.ColorSpaceTransform(src="ACES - ACEScg",
+                                      dst="Output - sRGB"))
 cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 config.addColorSpace(cs)
 
@@ -142,21 +188,22 @@ cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 config.addColorSpace(cs)
 
 # displays
-rec709_display = "Rec 709"
-config.addDisplay(rec709_display, "ACES Rec.709", "Output - Rec.709")
-config.addDisplay(rec709_display, "Raw", "Utility - Raw")
-config.addDisplay(rec709_display, "Log", "ACES - ACEScc")
+for name, colorspace in [["ACES sRGB", "Output - sRGB"], ["Log", "ACES - ACEScct"],
+                         ["Raw", "Utility - Raw"]]:
+    config.addDisplay("sRGB", name, colorspace)
 
-config.setActiveDisplays("Rec 709")
-config.setActiveViews(",".join(["ACES Rec.709",
-                                "Raw",
-                                "Log"]))
+for name, colorspace in [["ACES Rec.709", "Output - Rec.709"], ["Log", "ACES - ACEScct"],
+                         ["Raw", "Utility - Raw"]]:
+    config.addDisplay("Rec.709", name, colorspace)
+
+config.setActiveViews(','.join(["ACES sRGB", "ACES Rec.709", "Log", "Raw"]))
+config.setActiveDisplays(','.join(["sRGB", "Rec.709"]))
 
 # set roles
 config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, "ACES - ACEScg")
 config.setRole(OCIO.Constants.ROLE_REFERENCE, "ACES - ACES2065-1")
-config.setRole(OCIO.Constants.ROLE_COLOR_TIMING, "ACES - ACEScc")
-config.setRole(OCIO.Constants.ROLE_COMPOSITING_LOG, "ACES - ACEScc")
+config.setRole(OCIO.Constants.ROLE_COLOR_TIMING, "ACES - ACEScct")
+config.setRole(OCIO.Constants.ROLE_COMPOSITING_LOG, "ACES - ACEScct")
 config.setRole(OCIO.Constants.ROLE_DATA, "Utility - Raw")
 config.setRole(OCIO.Constants.ROLE_DEFAULT, "Utility - Raw")
 config.setRole(OCIO.Constants.ROLE_COLOR_PICKING, "Utility - Raw")

@@ -6,9 +6,9 @@ luma: [0.2126, 0.7152, 0.0722]
 
 roles:
   color_picking: Utility - Raw
-  color_timing: ACES - ACEScc
+  color_timing: ACES - ACEScct
   compositing_linear: ACES - ACEScg
-  compositing_log: ACES - ACEScc
+  compositing_log: ACES - ACEScct
   data: Utility - Raw
   default: Utility - Raw
   matte_paint: Utility - Raw
@@ -18,13 +18,17 @@ roles:
   texture_paint: Utility - Raw
 
 displays:
-  Rec 709:
+  Rec.709:
     - !<View> {name: ACES Rec.709, colorspace: Output - Rec.709}
+    - !<View> {name: Log, colorspace: ACES - ACEScct}
     - !<View> {name: Raw, colorspace: Utility - Raw}
-    - !<View> {name: Log, colorspace: ACES - ACEScc}
+  sRGB:
+    - !<View> {name: ACES sRGB, colorspace: Output - sRGB}
+    - !<View> {name: Log, colorspace: ACES - ACEScct}
+    - !<View> {name: Raw, colorspace: Utility - Raw}
 
-active_displays: [Rec 709]
-active_views: [ACES Rec.709, Raw, Log]
+active_displays: [sRGB, Rec.709]
+active_views: [ACES sRGB, ACES Rec.709, Log, Raw]
 
 colorspaces:
   - !<ColorSpace>
@@ -83,6 +87,21 @@ colorspaces:
         - !<FileTransform> {src: AP1_to_AP0.spimtx, interpolation: unknown}
 
   - !<ColorSpace>
+    name: ACES - ACEScct
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACEScct colorspace, gamma and primaries
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.249136, 1.468]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACEScct_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: AP1_to_AP0.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
     name: Input - Linear (sRGB)
     family: Input
     equalitygroup: ""
@@ -126,6 +145,20 @@ colorspaces:
         - !<FileTransform> {src: ProPhotoRGB_to_AP0.spimtx, interpolation: unknown}
 
   - !<ColorSpace>
+    name: Output - sRGB
+    family: Output
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      ACES sRGB output transform
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Log2 48 nits Shaper}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.sRGB.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
     name: Output - Rec.709
     family: Output
     equalitygroup: ""
@@ -137,7 +170,7 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Utility - Log2 48 nits Shaper}
-        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.a1.0.1.Rec.709.spi3d, interpolation: tetrahedral}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.709.spi3d, interpolation: tetrahedral}
 
   - !<ColorSpace>
     name: Utility - Raw
@@ -164,6 +197,19 @@ colorspaces:
         - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
 
   - !<ColorSpace>
+    name: Utility - Input - Linear (sRGB) -> Output - sRGB
+    family: Utility
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Utility transform for generating a Houdini LUT for ACES sRGB output transform from Linear (sRGB)
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: Input - Linear (sRGB), dst: Output - sRGB}
+
+  - !<ColorSpace>
     name: Utility - Input - Linear (sRGB) -> Output - Rec.709
     family: Utility
     equalitygroup: ""
@@ -175,6 +221,19 @@ colorspaces:
     from_reference: !<GroupTransform>
       children:
         - !<ColorSpaceTransform> {src: Input - Linear (sRGB), dst: Output - Rec.709}
+
+  - !<ColorSpace>
+    name: Utility - ACES - ACEScg -> Output - sRGB
+    family: Utility
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Utility transform for generating a Houdini LUT for ACES sRGB output transform from ACEScg
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: ACES - ACEScg, dst: Output - sRGB}
 
   - !<ColorSpace>
     name: Utility - ACES - ACEScg -> Output - Rec.709
