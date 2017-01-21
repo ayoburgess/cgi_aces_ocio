@@ -20,6 +20,8 @@ An OCIO config for CGI rendering with ACES 1.0.3. Houdini LUTs have been generat
 # Provided Utility Transforms
 * **Utility - Raw**
 * **Utility - Log2 48 nits Shaper**
+* **Utility - Input - Linear (sRGB) -> Output - sRGB** - utility for creating Houdini LUT, not needed when using OCIO directly
+* **Utility - ACES - ACEScg -> Output - sRGB** - utility for creating Houdini LUT, not needed when using OCIO directly
 * **Utility - Input - Linear (sRGB) -> Output - Rec.709** - utility for creating Houdini LUT, not needed when using OCIO directly
 * **Utility - ACES - ACEScg -> Output - Rec.709** - utility for creating Houdini LUT, not needed when using OCIO directly
 
