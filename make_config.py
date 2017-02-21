@@ -172,15 +172,25 @@ config.setRole(OCIO.Constants.ROLE_TEXTURE_PAINT, "Utility - Raw")
 config.setRole("rendering", "ACES - ACEScg")
 config.setRole("compositing_linear", "ACES - ACEScg")
 
-# output config
-output_filename = "config.ocio"
-try:
-    config.sanityCheck()
-except Exception as e:
-    print(e)
-    print("Configuration was not written due to a failed sanity check")
-    sys.exit()
+def output_config(ocio_config, config_filename, override_scene_linear_role=None):
+    if override_scene_linear_role is not None:
+        ocio_config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, override_scene_linear_role)
+        ocio_config.setRole("rendering", override_scene_linear_role)
 
-with open(output_filename, "w") as f:
-    f.write(config.serialize())
-print("Wrote {0} successfully".format(output_filename))
+    # output config
+    try:
+        ocio_config.sanityCheck()
+    except Exception as e:
+        print(e)
+        print("Configuration was not written due to a failed sanity check")
+        sys.exit()
+
+    with open(config_filename, "w") as f:
+        f.write(config.serialize())
+    print("Wrote {0} successfully".format(config_filename))
+    return
+
+# output config
+output_config(config, "config_scene_linear_acescg.ocio", "ACES - ACEScg")
+# a more likely compatible default config since most work with sRGB/Rec. 709 primaries
+output_config(config, "config_scene_linear_lin_srgb.ocio", "Input - Linear (sRGB)")
