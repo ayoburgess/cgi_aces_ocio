@@ -1,27 +1,27 @@
 # CGI ACES 1.0.3 OCIO Config
 OCIO configs for CGI rendering with ACES 1.0.3
 
-# Provided ACES Transforms
+# ACES Transforms
 * ACES - ACES2065-1
 * ACES - ACEScg
 * ACES - ACESproxy
 * ACES - ACEScc
 * ACES - ACEScct
 
-# Provided Output Transforms
+# Output Transforms
 * Output - ACES sRGB
 * Output - ACES Rec.709
 
-# Provided Input Transforms
+# Input Transforms
 * Input - Linear (sRGB)
 * Input - sRGB
 * Input - Linear (ProPhoto RGB)
 
-# Provided Utility Transforms
+# Utility Transforms
 * Utility - Raw
 * Utility - Log2 48 nits Shaper
 
-# Provided OCIO Config Files
+# OCIO Config Files
 * **config_scene_linear_acescg.ocio** - "scene_linear" and "rendering" roles set to "ACES - ACEScg"
 * **config_scene_linear_lin_srgb.ocio** - "scene_linear" and "rendering" roles set to "Input - Linear (sRGB)"
 
