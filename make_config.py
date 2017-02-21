@@ -147,46 +147,6 @@ gt.push_back(OCIO.FileTransform("Log2_48_nits_Shaper_to_linear.spi1d",
 cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
 config.addColorSpace(cs)
 
-cs = OCIO.ColorSpace(name="Utility - Input - Linear (sRGB) -> Output - sRGB", family="Utility")
-cs.setDescription("Utility transform for generating a Houdini LUT for ACES sRGB "
-                  "output transform from Linear (sRGB)")
-cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
-gt = OCIO.GroupTransform()
-gt.push_back(OCIO.ColorSpaceTransform(src="Input - Linear (sRGB)",
-                                      dst="Output - sRGB"))
-cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
-config.addColorSpace(cs)
-
-cs = OCIO.ColorSpace(name="Utility - Input - Linear (sRGB) -> Output - Rec.709", family="Utility")
-cs.setDescription("Utility transform for generating a Houdini LUT for ACES Rec.709 "
-                  "output transform from Linear (sRGB)")
-cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
-gt = OCIO.GroupTransform()
-gt.push_back(OCIO.ColorSpaceTransform(src="Input - Linear (sRGB)",
-                                      dst="Output - Rec.709"))
-cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
-config.addColorSpace(cs)
-
-cs = OCIO.ColorSpace(name="Utility - ACES - ACEScg -> Output - sRGB", family="Utility")
-cs.setDescription("Utility transform for generating a Houdini LUT for ACES sRGB "
-                  "output transform from ACEScg")
-cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
-gt = OCIO.GroupTransform()
-gt.push_back(OCIO.ColorSpaceTransform(src="ACES - ACEScg",
-                                      dst="Output - sRGB"))
-cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
-config.addColorSpace(cs)
-
-cs = OCIO.ColorSpace(name="Utility - ACES - ACEScg -> Output - Rec.709", family="Utility")
-cs.setDescription("Utility transform for generating a Houdini LUT for ACES Rec.709 "
-                  "output transform from ACEScg")
-cs.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
-gt = OCIO.GroupTransform()
-gt.push_back(OCIO.ColorSpaceTransform(src="ACES - ACEScg",
-                                      dst="Output - Rec.709"))
-cs.setTransform(gt, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
-config.addColorSpace(cs)
-
 # displays
 for name, colorspace in [["ACES sRGB", "Output - sRGB"], ["Log", "ACES - ACEScct"],
                          ["Raw", "Utility - Raw"]]:
