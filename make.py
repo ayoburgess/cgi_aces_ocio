@@ -5,7 +5,7 @@ OCIO configuration make script
 from __future__ import print_function
 import PyOpenColorIO as OCIO
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 
 def make_config(config_filename="config.ocio", scene_linear_role="Input - Linear (sRGB)"):
@@ -36,6 +36,10 @@ def make_config(config_filename="config.ocio", scene_linear_role="Input - Linear
                       ["Raw", "Utility - Raw"]]
     for name, colorspace in display_spaces:
         config.addDisplay("default", name, colorspace)
+
+    config.setActiveViews(','.join(
+        ["Alexa LogC to Rec. 709", "ACES Rec. 709", "ACES sRGB", "sRGB Texture", "Raw"]))
+    config.setActiveDisplays(','.join(["default"]))
 
     config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, scene_linear_role)
     config.setRole(OCIO.Constants.ROLE_REFERENCE, "ACES - ACES2065-1")
