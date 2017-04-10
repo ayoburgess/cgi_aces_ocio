@@ -8,7 +8,7 @@ import PyOpenColorIO as OCIO
 __version__ = "0.3.1"
 
 
-def make_config(config_filename="config.ocio", scene_linear_role="Input - Linear (sRGB)"):
+def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"):
     """
     Generate OCIO config
     """
