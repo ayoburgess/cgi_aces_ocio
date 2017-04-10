@@ -5,7 +5,7 @@ OCIO configuration make script
 from __future__ import print_function
 import PyOpenColorIO as OCIO
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 
 def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"):
