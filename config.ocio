@@ -7,14 +7,14 @@ luma: [0.2126, 0.7152, 0.0722]
 roles:
   color_picking: Utility - Raw
   color_timing: ACES - ACEScct
-  compositing_linear: Input - Linear (sRGB)
+  compositing_linear: ACES - ACEScg
   compositing_log: ACES - ACEScct
   data: Utility - Raw
   default: Utility - Raw
   matte_paint: Utility - Raw
   reference: ACES - ACES2065-1
-  rendering: Input - Linear (sRGB)
-  scene_linear: Input - Linear (sRGB)
+  rendering: ACES - ACEScg
+  scene_linear: ACES - ACEScg
   texture_paint: Utility - Raw
 
 displays:
