@@ -5,7 +5,7 @@ OCIO configuration make script
 from __future__ import print_function
 import PyOpenColorIO as OCIO
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 
 def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"):
@@ -22,23 +22,18 @@ def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"
     config.addColorSpace(linear_srgb_colorspace())
     config.addColorSpace(linear_prophotorgb_colorspace())
     config.addColorSpace(srgb_colorspace())
-    config.addColorSpace(alexa_v3_logc_colorspace())
     config.addColorSpace(raw_colorspace())
     config.addColorSpace(aces_srgb_output())
     config.addColorSpace(aces_rec709_output())
-    config.addColorSpace(alexa_rec709_output())
 
-    display_spaces = [["Alexa LogC to Rec. 709",
-                       "Output - Alexa LogC to Rec. 709"],
+    display_spaces = [["ACES sRGB", "Output - ACES sRGB"],
                       ["ACES Rec. 709", "Output - ACES Rec. 709"],
-                      ["ACES sRGB", "Output - ACES sRGB"],
-                      ["sRGB Texture", "Input - sRGB"],
                       ["Raw", "Utility - Raw"]]
     for name, colorspace in display_spaces:
         config.addDisplay("default", name, colorspace)
 
     config.setActiveViews(','.join(
-        ["Alexa LogC to Rec. 709", "ACES Rec. 709", "ACES sRGB", "sRGB Texture", "Raw"]))
+        ["ACES sRGB", "ACES Rec. 709", "Raw"]))
     config.setActiveDisplays(','.join(["default"]))
 
     config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, scene_linear_role)

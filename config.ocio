@@ -19,14 +19,12 @@ roles:
 
 displays:
   default:
-    - !<View> {name: Alexa LogC to Rec. 709, colorspace: Output - Alexa LogC to Rec. 709}
-    - !<View> {name: ACES Rec. 709, colorspace: Output - ACES Rec. 709}
     - !<View> {name: ACES sRGB, colorspace: Output - ACES sRGB}
-    - !<View> {name: sRGB Texture, colorspace: Input - sRGB}
+    - !<View> {name: ACES Rec. 709, colorspace: Output - ACES Rec. 709}
     - !<View> {name: Raw, colorspace: Utility - Raw}
 
 active_displays: [default]
-active_views: [Alexa LogC to Rec. 709, ACES Rec. 709, ACES sRGB, sRGB Texture, Raw]
+active_views: [ACES sRGB, ACES Rec. 709, Raw]
 
 colorspaces:
   - !<ColorSpace>
@@ -143,21 +141,6 @@ colorspaces:
         - !<FileTransform> {src: sRGB_to_AP0.spimtx, interpolation: unknown}
 
   - !<ColorSpace>
-    name: Input - Alexa V3 LogC
-    family: Alexa
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      Alexa V3 LogC colorspace, gamma and primaries
-    isdata: false
-    allocation: uniform
-    allocationvars: [0, 1]
-    to_reference: !<GroupTransform>
-      children:
-        - !<FileTransform> {src: V3_LogC_800_to_linear.spi1d, interpolation: linear}
-        - !<FileTransform> {src: Alexa_Wide_Gamut_RGB_to_AP0.spimtx, interpolation: unknown}
-
-  - !<ColorSpace>
     name: Utility - Raw
     family: Utility
     equalitygroup: ""
@@ -194,17 +177,3 @@ colorspaces:
       children:
         - !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear, direction: inverse}
         - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.709.spi3d, interpolation: tetrahedral}
-
-  - !<ColorSpace>
-    name: Output - Alexa LogC to Rec. 709
-    family: Output
-    equalitygroup: ""
-    bitdepth: 32f
-    description: |
-      Alexa LogC to Rec. 709 output transform
-    isdata: false
-    allocation: uniform
-    from_reference: !<GroupTransform>
-      children:
-        - !<ColorSpaceTransform> {src: ACES - ACES2065-1, dst: Input - Alexa V3 LogC}
-        - !<FileTransform> {src: AlexaV3_K1S1_LogC2Video_Rec709_EE_nuke3d.cube, interpolation: tetrahedral}
