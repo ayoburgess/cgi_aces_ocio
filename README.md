@@ -9,17 +9,14 @@ OCIO config for CGI rendering with ACES 1.0.3
 * ACES - ACEScct
 
 ### Display Transforms
-* Alexa LogC to Rec. 709
-* ACES Rec. 709
 * ACES sRGB
-* sRGB Texture
+* ACES Rec. 709
 * Raw
 
 ### Input Transforms
 * Input - Linear (sRGB)
 * Input - sRGB
 * Input - Linear (ProPhoto RGB)
-* Input - Alexa V3 LogC
 
 ### Utility Transforms
 * Utility - Raw
