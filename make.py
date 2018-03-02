@@ -3,7 +3,7 @@
 from __future__ import print_function
 import PyOpenColorIO as OCIO
 
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 
 
 def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"):
