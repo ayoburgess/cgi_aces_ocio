@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-"""
-OCIO configuration make script
-"""
+"""OCIO configuration make script"""
 from __future__ import print_function
 import PyOpenColorIO as OCIO
 
@@ -9,9 +7,7 @@ __version__ = "0.3.3"
 
 
 def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"):
-    """
-    Generate OCIO config
-    """
+    """Generate OCIO config"""
     config = OCIO.Config()
     config.setSearchPath(":".join(["luts", "matrices"]))
     config.addColorSpace(aces_2065_1_colorspace())
@@ -20,20 +16,21 @@ def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"
     config.addColorSpace(acescc_colorspace())
     config.addColorSpace(acescct_colorspace())
     config.addColorSpace(linear_srgb_colorspace())
-    config.addColorSpace(linear_prophotorgb_colorspace())
     config.addColorSpace(srgb_colorspace())
+    config.addColorSpace(rec709_colorspace())
     config.addColorSpace(raw_colorspace())
-    config.addColorSpace(aces_srgb_output())
     config.addColorSpace(aces_rec709_output())
+    config.addColorSpace(aces_srgb_output())
 
-    display_spaces = [["ACES sRGB", "Output - ACES sRGB"],
-                      ["ACES Rec. 709", "Output - ACES Rec. 709"],
+    display_spaces = [["ACES Rec. 709", "Output - ACES Rec. 709"],
+                      ["ACES sRGB", "Output - ACES sRGB"],
                       ["Raw", "Utility - Raw"]]
     for name, colorspace in display_spaces:
         config.addDisplay("default", name, colorspace)
 
-    config.setActiveViews(','.join(
-        ["ACES sRGB", "ACES Rec. 709", "Raw"]))
+    config.setActiveViews(','.join(["ACES Rec. 709",
+                                    "ACES sRGB",
+                                    "Raw"]))
     config.setActiveDisplays(','.join(["default"]))
 
     config.setRole(OCIO.Constants.ROLE_SCENE_LINEAR, scene_linear_role)
@@ -57,9 +54,7 @@ def make_config(config_filename="config.ocio", scene_linear_role="ACES - ACEScg"
 
 
 def aces_2065_1_colorspace():
-    """
-    ACES 2065-1
-    """
+    """ACES 2065-1"""
     col_space = OCIO.ColorSpace(name="ACES - ACES2065-1", family="ACES")
     col_space.setDescription("Scene-linear, high dynamic range, AP0 primaries")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -69,9 +64,7 @@ def aces_2065_1_colorspace():
 
 
 def acescg_colorspace():
-    """
-    ACEScg
-    """
+    """ACEScg"""
     col_space = OCIO.ColorSpace(name="ACES - ACEScg", family="ACES")
     col_space.setDescription("Scene-linear, high dynamic range, AP1 primaries")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -80,15 +73,13 @@ def acescg_colorspace():
     group_xform = OCIO.GroupTransform()
     group_xform.push_back(OCIO.FileTransform("AP1_to_AP0.spimtx",
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 def acesproxy_colorspace():
-    """
-    ACESproxy
-    """
+    """ACESproxy"""
     col_space = OCIO.ColorSpace(name="ACES - ACESproxy", family="ACES")
     col_space.setDescription("ACESproxy colorspace, gamma and primaries")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -100,15 +91,13 @@ def acesproxy_colorspace():
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
     group_xform.push_back(OCIO.FileTransform("AP1_to_AP0.spimtx",
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 def acescc_colorspace():
-    """
-    ACEScc
-    """
+    """ACEScc"""
     col_space = OCIO.ColorSpace(name="ACES - ACEScc", family="ACES")
     col_space.setDescription("ACEScc colorspace, gamma and primaries")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -120,15 +109,13 @@ def acescc_colorspace():
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
     group_xform.push_back(OCIO.FileTransform("AP1_to_AP0.spimtx",
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 def acescct_colorspace():
-    """
-    ACEScct
-    """
+    """ACEScct"""
     col_space = OCIO.ColorSpace(name="ACES - ACEScct", family="ACES")
     col_space.setDescription("ACEScct colorspace, gamma and primaries")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -140,15 +127,13 @@ def acescct_colorspace():
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
     group_xform.push_back(OCIO.FileTransform("AP1_to_AP0.spimtx",
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 def linear_srgb_colorspace():
-    """
-    Linear sRGB
-    """
+    """Linear sRGB"""
     col_space = OCIO.ColorSpace(name="Input - Linear (sRGB)", family="Input")
     col_space.setDescription(
         "Scene-linear, high dynamic range, sRGB/Rec.709 primaries")
@@ -158,34 +143,13 @@ def linear_srgb_colorspace():
     group_xform = OCIO.GroupTransform()
     group_xform.push_back(OCIO.FileTransform("sRGB_to_AP0.spimtx",
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
-    return col_space
-
-
-def linear_prophotorgb_colorspace():
-    """
-    Linear ProPhotoRGB
-    """
-    col_space = OCIO.ColorSpace(
-        name="Input - Linear (ProPhoto RGB)", family="Input")
-    col_space.setDescription(
-        "Scene-linear, high dynamic range, ProPhoto RGB primaries")
-    col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
-    col_space.setAllocationVars([-8.0, 5.0, 0.00390625])
-    col_space.setAllocation(OCIO.Constants.ALLOCATION_LG2)
-    group_xform = OCIO.GroupTransform()
-    group_xform.push_back(OCIO.FileTransform("ProPhotoRGB_to_AP0.spimtx",
-                                             direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 def srgb_colorspace():
-    """
-    sRGB
-    """
+    """sRGB"""
     col_space = OCIO.ColorSpace(name="Input - sRGB", family="Input")
     col_space.setDescription("sRGB colorspace, gamma and primaries")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -197,35 +161,32 @@ def srgb_colorspace():
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
     group_xform.push_back(OCIO.FileTransform("sRGB_to_AP0.spimtx",
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
-def alexa_v3_logc_colorspace():
-    """
-    Alexa V3 LogC
-    """
-    col_space = OCIO.ColorSpace(name="Input - Alexa V3 LogC", family="Alexa")
-    col_space.setDescription("Alexa V3 LogC colorspace, gamma and primaries")
+def rec709_colorspace():
+    """Rec. 709"""
+    col_space = OCIO.ColorSpace(name="Input - Rec. 709", family="Input")
+    col_space.setDescription(
+        "Rec. 709 colorspace, Rec. 1886 gamma, Rec. 709 primaries")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
     col_space.setAllocationVars([0, 1])
     col_space.setAllocation(OCIO.Constants.ALLOCATION_UNIFORM)
     group_xform = OCIO.GroupTransform()
-    group_xform.push_back(OCIO.FileTransform("V3_LogC_800_to_linear.spi1d",
+    group_xform.push_back(OCIO.FileTransform("rec1886_to_linear.spi1d",
                                              interpolation=OCIO.Constants.INTERP_LINEAR,
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    group_xform.push_back(OCIO.FileTransform("Alexa_Wide_Gamut_RGB_to_AP0.spimtx",
+    group_xform.push_back(OCIO.FileTransform("sRGB_to_AP0.spimtx",
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 def raw_colorspace():
-    """
-    Raw
-    """
+    """Raw"""
     col_space = OCIO.ColorSpace(name="Utility - Raw", family="Utility")
     col_space.setDescription("Raw data")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -234,9 +195,7 @@ def raw_colorspace():
 
 
 def aces_srgb_output():
-    """
-    ACES sRGB output
-    """
+    """ACES sRGB output"""
     col_space = OCIO.ColorSpace(name="Output - ACES sRGB", family="Output")
     col_space.setDescription("ACES sRGB output transform")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -245,17 +204,23 @@ def aces_srgb_output():
                                              interpolation=OCIO.Constants.INTERP_LINEAR,
                                              direction=OCIO.Constants.TRANSFORM_DIR_INVERSE))
     group_xform.push_back(OCIO.FileTransform("Log2_48_nits_Shaper.RRT.sRGB.spi3d",
-                                             interpolation=OCIO.Constants.INTERP_TETRAHEDRAL,
+                                             interpolation=OCIO.Constants.INTERP_TETRAHEDRAL))
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+
+    group_xform = OCIO.GroupTransform()
+    group_xform.push_back(OCIO.FileTransform("InvRRT.sRGB.Log2_48_nits_Shaper.spi3d",
+                                             interpolation=OCIO.Constants.INTERP_TETRAHEDRAL))
+    group_xform.push_back(OCIO.FileTransform("Log2_48_nits_Shaper_to_linear.spi1d",
+                                             interpolation=OCIO.Constants.INTERP_LINEAR,
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 def aces_rec709_output():
-    """
-    ACES Rec. 709 output
-    """
+    """ACES Rec. 709 output"""
     col_space = OCIO.ColorSpace(name="Output - ACES Rec. 709", family="Output")
     col_space.setDescription("ACES Rec. 709 output transform")
     col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
@@ -264,31 +229,23 @@ def aces_rec709_output():
                                              interpolation=OCIO.Constants.INTERP_LINEAR,
                                              direction=OCIO.Constants.TRANSFORM_DIR_INVERSE))
     group_xform.push_back(OCIO.FileTransform("Log2_48_nits_Shaper.RRT.Rec.709.spi3d",
-                                             interpolation=OCIO.Constants.INTERP_TETRAHEDRAL,
-                                             direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
-    return col_space
+                                             interpolation=OCIO.Constants.INTERP_TETRAHEDRAL))
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
 
-
-def alexa_rec709_output():
-    """
-    Alexa Rec. 709 output
-    """
-    col_space = OCIO.ColorSpace(
-        name="Output - Alexa LogC to Rec. 709", family="Output")
-    col_space.setDescription("Alexa LogC to Rec. 709 output transform")
-    col_space.setBitDepth(OCIO.Constants.BIT_DEPTH_F32)
     group_xform = OCIO.GroupTransform()
-    group_xform.push_back(OCIO.ColorSpaceTransform(
-        src="ACES - ACES2065-1", dst="Input - Alexa V3 LogC"))
-    group_xform.push_back(OCIO.FileTransform("AlexaV3_K1S1_LogC2Video_Rec709_EE_nuke3d.cube",
-                                             interpolation=OCIO.Constants.INTERP_TETRAHEDRAL,
+    group_xform.push_back(OCIO.FileTransform("InvRRT.Rec.709.Log2_48_nits_Shaper.spi3d",
+                                             interpolation=OCIO.Constants.INTERP_TETRAHEDRAL))
+    group_xform.push_back(OCIO.FileTransform("Log2_48_nits_Shaper_to_linear.spi1d",
+                                             interpolation=OCIO.Constants.INTERP_LINEAR,
                                              direction=OCIO.Constants.TRANSFORM_DIR_FORWARD))
-    col_space.setTransform(
-        group_xform, OCIO.Constants.COLORSPACE_DIR_FROM_REFERENCE)
+    col_space.setTransform(group_xform,
+                           OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     return col_space
 
 
 if __name__ == "__main__":
-    make_config()
+    make_config(config_filename="config_acescg.ocio",
+                scene_linear_role="ACES - ACEScg")
+    make_config(config_filename="config_linear_srgb.ocio",
+                scene_linear_role="Input - Linear (sRGB)")
