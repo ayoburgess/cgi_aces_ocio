@@ -2,6 +2,9 @@ import os
 import PyOpenColorIO as OCIO
 
 
+__version__ = "0.7.0"
+
+
 def build_config(output_path):
     """Generate OCIO config"""
     config = OCIO.Config()
