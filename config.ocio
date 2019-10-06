@@ -1,0 +1,171 @@
+ocio_profile_version: 1
+
+search_path: luts:mtx
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: srgb
+  color_timing: acescct
+  compositing_log: acescc
+  data: ncd
+  default: ncd
+  matte_paint: acesproxy
+  reference: aces
+  rendering: acescg
+  scene_linear: acescg
+  texture_paint: acescg
+
+displays:
+  rec709:
+    - !<View> {name: ACES Rec. 709, colorspace: aces_out_rec709}
+    - !<View> {name: Shot, colorspace: acesproxy, looks: +shot}
+    - !<View> {name: No LUT, colorspace: ncd}
+
+active_displays: [rec709]
+active_views: [ACES Rec. 709, Shot, No LUT]
+
+looks:
+  - !<Look>
+    name: shot
+    process_space: acesproxy
+    transform: !<FileTransform> {src: $SHOT.cube, interpolation: tetrahedral}
+
+
+
+colorspaces:
+  - !<ColorSpace>
+    name: aces
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System reference color space (ACES 2065-1)
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+
+  - !<ColorSpace>
+    name: acescg
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System ACEScg color space
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<FileTransform> {src: ap1_to_ap0.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: acesproxy
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System ACESproxy color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACESproxy_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: ap1_to_ap0.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: acescc
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System ACEScc color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.3584, 1.468]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACEScc_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: ap1_to_ap0.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: acescct
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System ACEScct color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.249136, 1.468]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: ACEScct_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: ap1_to_ap0.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: log248nitsshaper
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System Log2 48 nits Shaper color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<FileTransform> {src: Log2_48_nits_Shaper_to_linear.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: aces_out_rec709
+    family: ACES
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      The Academy Color Encoding System ACES 1.0 Rec. 709 Output Transform color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: InvRRT.Rec.709.Log2_48_nits_Shaper.spi3d, interpolation: tetrahedral}
+        - !<ColorSpaceTransform> {src: log248nitsshaper, dst: aces}
+    from_reference: !<GroupTransform>
+      children:
+        - !<ColorSpaceTransform> {src: aces, dst: log248nitsshaper}
+        - !<FileTransform> {src: Log2_48_nits_Shaper.RRT.Rec.709.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: lin_srgb
+    family: sRGB
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Scene-linear sRGB color space
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8, 5, 0.00390625]
+    to_reference: !<FileTransform> {src: srgb_to_ap0.bradford.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: srgb
+    family: sRGB
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      sRGB color space
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: sRGB_to_linear.spi1d, interpolation: linear}
+        - !<FileTransform> {src: srgb_to_ap0.bradford.spimtx, interpolation: unknown}
+
+  - !<ColorSpace>
+    name: ncd
+    family: Data
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Non-color data
+    isdata: true
+    allocation: uniform
