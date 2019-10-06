@@ -21,6 +21,7 @@ def build_config(output_path):
 
     # add looks
     config.addLook(shot_look())
+    config.addLook(neutral_look())
 
     # add displays
     rec709_display_spaces = [
@@ -207,11 +208,32 @@ def aces_out_rec709_colorspace():
 
 
 def shot_look():
-    """Custom shot look transform controlled by $SHOT environment variable"""
+    """
+    Custom shot look transform controlled by $SHOT environment variable.
+    Process space is ACESproxy
+    """
     look = OCIO.Look(name="shot", processSpace="acesproxy")
+    look.setDescription(
+        "Custom shot look transform controlled by $SHOT "
+        "environment variable. Process space is ACESproxy"
+    )
     ftransform = OCIO.FileTransform(
         "$SHOT.cube", interpolation=OCIO.Constants.INTERP_TETRAHEDRAL
     )
+    look.setTransform(ftransform)
+    return look
+
+
+def neutral_look():
+    """
+    Custom shot neutralization transform controlled by $SHOT environment variable.
+    Process space is ACEScg"""
+    look = OCIO.Look(name="neutral_cc", processSpace="acescg")
+    look.setDescription(
+        "Custom shot neutralization transform controlled by $SHOT "
+        "environment variable. Process space is ACEScg"
+    )
+    ftransform = OCIO.FileTransform("${SHOT}_neutral.cc")
     look.setTransform(ftransform)
     return look
 
@@ -264,7 +286,12 @@ def ncd_colorspace():
     return col_space
 
 
-if __name__ == "__main__":
+def main():
+    """Main function"""
     this_dir = os.path.abspath(os.path.dirname(__file__))
     output_path = os.path.join(this_dir, "config.ocio")
     build_config(output_path)
+
+
+if __name__ == "__main__":
+    main()

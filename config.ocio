@@ -29,7 +29,16 @@ looks:
   - !<Look>
     name: shot
     process_space: acesproxy
+    description: |
+      Custom shot look transform controlled by $SHOT environment variable. Process space is ACESproxy
     transform: !<FileTransform> {src: $SHOT.cube, interpolation: tetrahedral}
+
+  - !<Look>
+    name: neutral_cc
+    process_space: acescg
+    description: |
+      Custom shot neutralization transform controlled by $SHOT environment variable. Process space is ACEScg
+    transform: !<FileTransform> {src: "${SHOT}_neutral.cc", interpolation: unknown}
 
 
 

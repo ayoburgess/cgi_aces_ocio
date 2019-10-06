@@ -14,7 +14,8 @@ OCIO configs for CGI rendering with ACES 1.0.3.
 * No LUT - View image with no display transform applied
 
 ### Look Transforms
-* Shot - Custom shot look transform controlled by $SHOT environment variable
+* shot - Custom shot look transform controlled by $SHOT environment variable. Process space is ACESproxy
+* neutral_cc - Custom shot neutralization transform controlled by $SHOT environment variable. Process space is ACEScg
 
 ### Input Transforms
 * lin_srgb - Scene-linear sRGB color space
